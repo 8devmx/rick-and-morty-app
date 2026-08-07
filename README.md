@@ -8,6 +8,13 @@
 
 ---
 
+- Integrantes del equipo
+
+- Luis Antonio Nazario Avalos
+- Octavio Alejandro Pérez Pech
+- Marcelino Celestino De Feria
+- Jesús David Pérez Artiles
+
 ## 1. Resumen ejecutivo
 
 ### Producto
