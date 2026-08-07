@@ -1,33 +1,65 @@
 <!DOCTYPE html>
 <html lang="es-MX">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rick and Morty</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rick and Morty</title>
-  <link rel="stylesheet" href="css/styles.css">
-</head>
+  <body>
+    <header>
+      <div class="logo">
+        <h1>Rick and Morty</h1>
+        <p>Explorador de personajes</p>
+      </div>
 
-<body>
-  <header>
-    <div class="logo">
-      <h1>Rick and Morty</h1>
-    </div>
-    <nav>
-      <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Characters</a></li>
-        <li><a href="#">Episodes</a></li>
-      </ul>
-    </nav>
-  </header>
-  <div id="app">
-    <div class="characters"></div>
-  </div>
-  <footer>
-    <p>Creado con ❤️ por los alumnos reprobados de Ingeniería de Requisitos de la UNID</p>
-  </footer>
-  <script type="module" src="js/main.js"></script>
-</body>
+      <nav>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Characters</a></li>
+          <li><a href="#">Episodes</a></li>
+        </ul>
+      </nav>
+    </header>
 
+    <main id="app">
+      <section class="filters" aria-label="Filtros de personajes">
+        <input id="search" type="search" placeholder="Buscar personaje..." autocomplete="off" />
+
+        <select id="status">
+          <option value="">Todos los estados</option>
+          <option value="alive">Alive</option>
+          <option value="dead">Dead</option>
+          <option value="unknown">Unknown</option>
+        </select>
+
+        <select id="species">
+          <option value="">Todas las especies</option>
+          <option value="Human">Human</option>
+          <option value="Alien">Alien</option>
+          <option value="Robot">Robot</option>
+          <option value="Animal">Animal</option>
+        </select>
+
+        <select id="gender">
+          <option value="">Todos los géneros</option>
+          <option value="Female">Female</option>
+          <option value="Male">Male</option>
+          <option value="Genderless">Genderless</option>
+          <option value="unknown">unknown</option>
+        </select>
+
+        <button id="reset-filters" type="button">Limpiar filtros</button>
+      </section>
+
+      <section class="characters" aria-live="polite"></section>
+    </main>
+
+    <footer>
+      <p>Creado por el equipo de Ingeniería de Requisitos</p>
+    </footer>
+
+    <script type="module" src="js/main.js"></script>
+  </body>
 </html>
