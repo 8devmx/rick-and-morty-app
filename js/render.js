@@ -1,5 +1,4 @@
 export default function renderAllCharacters (response, currentPage) {
-  console.log(`renderAllCharacters: ${currentPage}`)
   const { results, info } = response
   const characters = results
   let html = ''
@@ -22,11 +21,9 @@ export default function renderAllCharacters (response, currentPage) {
   renderPagination(info.pages, currentPage)
 }
 export function renderPagination (totalPages, currentPage = 1) {
-  console.log(`renderPagination: ${currentPage}`)
   let html = ''
   const paginationContainer = document.querySelector('#pagination')
   for (let i = 1; i <= totalPages; i++) {
-    console.log({ "index": i, "page": currentPage })
     html += `<a class="pagination_button ${i === parseInt(currentPage) ? 'active' : ''}" href="${i}">${i}</a>`
   }
   paginationContainer.innerHTML = html

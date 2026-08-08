@@ -15,6 +15,5 @@ paginationContainer.addEventListener('click', async function (e) {
 async function getCharacterByPage (page = 1) {
   const apiUrl = `https://rickandmortyapi.com/api/character?page=${page}`
   const response = await fetchData(apiUrl)
-  console.log(`getCharacterByPage: ${page}`)
   renderAllCharacters(response, page)
 }
