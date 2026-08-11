@@ -1,4 +1,6 @@
-export default function renderAllCharacters (characters) {
+export default function renderAllCharacters (response, currentPage) {
+  const { results, info } = response
+  const characters = results
   let html = ''
   characters.forEach(character => {
     html += `
@@ -16,4 +18,13 @@ export default function renderAllCharacters (characters) {
     `
   })
   document.querySelector('.characters').innerHTML = html
+  renderPagination(info.pages, currentPage)
+}
+export function renderPagination (totalPages, currentPage = 1) {
+  let html = ''
+  const paginationContainer = document.querySelector('#pagination')
+  for (let i = 1; i <= totalPages; i++) {
+    html += `<a class="pagination_button ${i === parseInt(currentPage) ? 'active' : ''}" href="${i}">${i}</a>`
+  }
+  paginationContainer.innerHTML = html
 }
