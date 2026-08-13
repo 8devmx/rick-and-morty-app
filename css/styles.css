@@ -55,6 +55,93 @@ nav ul a {
   padding: 20px 10px;
 }
 
+.character_detail_button {
+  border: 0;
+  border-radius: 6px;
+  background: #535353;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 12px;
+  padding: 10px 14px;
+}
+
+.modal {
+  display: none;
+  inset: 0;
+  position: fixed;
+  z-index: 10;
+}
+
+.modal.is-open {
+  display: grid;
+  place-items: center;
+}
+
+.modal__backdrop {
+  background: rgb(0 0 0 / 70%);
+  inset: 0;
+  position: absolute;
+}
+
+.modal__content {
+  background: #fff;
+  border-radius: 12px;
+  max-width: 700px;
+  overflow: hidden;
+  position: relative;
+  width: min(90%, 700px);
+  z-index: 1;
+}
+
+.modal__close {
+  background: #111;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  font-size: 24px;
+  height: 36px;
+  line-height: 1;
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 36px;
+}
+
+#character-detail {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 1.2fr;
+}
+
+.detail_image {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.detail_info {
+  padding: 32px 24px;
+}
+
+.detail_info h2 {
+  margin-bottom: 16px;
+}
+
+.detail_info p {
+  margin: 8px 0;
+}
+
+@media (max-width: 560px) {
+  #character-detail {
+    grid-template-columns: 1fr;
+  }
+
+  .detail_image {
+    max-height: 260px;
+  }
+}
+
 footer {
   margin: auto;
   text-align: center;
