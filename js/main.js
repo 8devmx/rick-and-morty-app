@@ -1,5 +1,8 @@
 import fetchData from './api.js'
-import renderAllCharacters from './render.js'
+import renderAllCharacters, { renderCharacterDetail } from './render.js'
+const paginationContainer = document.querySelector('#pagination')
+const charactersContainer = document.querySelector('.characters')
+const modal = document.querySelector('#character-modal')
 const paginationContainer = document.querySelector('#pagination')
 
 getCharacterByPage()
