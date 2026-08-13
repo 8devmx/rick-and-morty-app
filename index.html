@@ -15,15 +15,27 @@
     </div>
     <nav>
       <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Characters</a></li>
-        <li><a href="#">Episodes</a></li>
+        <li><a href="#" data-view="home">Home</a></li>
+        <li><a href="#" data-view="characters">Characters</a></li>
+        <li><a href="#" data-view="episodes">Episodes</a></li>
       </ul>
     </nav>
   </header>
   <div id="app">
-    <div class="characters"></div>
-    <div id="pagination"></div>
+    <section id="home" class="view">
+      <div class="hero">
+        <h2>Bienvenido a Rick and Morty</h2>
+        <p>Explora los personajes y episodios de la serie.</p>
+      </div>
+    </section>
+    <section id="characters" class="view">
+      <div class="characters"></div>
+      <div id="pagination"></div>
+    </section>
+    <section id="episodes" class="view">
+      <div class="episodes"></div>
+      <div id="episode-pagination"></div>
+    </section>
   </div>
   <footer>
     <p>Creado con ❤️ por los alumnos reprobados de Ingeniería de Requisitos de la UNID</p>
