@@ -20,6 +20,25 @@ export default function renderAllCharacters (response, currentPage) {
   document.querySelector('.characters').innerHTML = html
   renderPagination(info.pages, currentPage)
 }
+
+export function renderCharacterDetail (character) {
+  const origin = character.origin.name || 'Desconocido'
+  const location = character.location.name || 'Desconocida'
+
+  document.querySelector('#character-detail').innerHTML = `
+    <img class="detail_image" src="${character.image}" alt="${character.name}">
+    <div class="detail_info">
+      <h2 id="modal-title">${character.name}</h2>
+      <p><strong>Estado:</strong> ${character.status}</p>
+      <p><strong>Especie:</strong> ${character.species}</p>
+      <p><strong>Tipo:</strong> ${character.type || 'No especificado'}</p>
+      <p><strong>Género:</strong> ${character.gender}</p>
+      <p><strong>Origen:</strong> ${origin}</p>
+      <p><strong>Ubicación:</strong> ${location}</p>
+      <p><strong>Episodios:</strong> ${character.episode.length}</p>
+    </div>
+  `
+}
 export function renderPagination (totalPages, currentPage = 1) {
   let html = ''
   const paginationContainer = document.querySelector('#pagination')
