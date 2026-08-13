@@ -13,6 +13,7 @@ export default function renderAllCharacters (response, currentPage) {
           <p>Status: ${character.status}</p>
           <p>Species: ${character.species}</p>
           <p>Gender: ${character.gender}</p>
+          <button class="character_detail_button" type="button" data-character-id="${character.id}">Ver detalle</button>
         </div>
       </div>
     `
