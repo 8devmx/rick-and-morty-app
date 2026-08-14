@@ -28,3 +28,20 @@ export function renderPagination (totalPages, currentPage = 1) {
   }
   paginationContainer.innerHTML = html
 }
+
+
+export function renderRandomCharacter (character) {
+  const html = `
+    <div class="character">
+      <img src="${character.image}" alt="${character.name}">
+      <div class="character_info">
+        <h2>${character.name}</h2>
+        <p>Status: ${character.status}</p>
+        <p>Species: ${character.species}</p>
+        <p>Location: ${character.location.name}</p>
+      </div>
+    </div>
+  `
+
+  document.querySelector('#random-character').innerHTML = html
+}

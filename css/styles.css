@@ -88,3 +88,28 @@ footer {
   background: #535353;
   color: #fff;
 }
+
+.random-section {
+  padding: 30px 20px;
+  text-align: center;
+}
+
+#random-character-button {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  background: crimson;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#random-character-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+#random-character {
+  max-width: 250px;
+  margin: 20px auto;
+}
