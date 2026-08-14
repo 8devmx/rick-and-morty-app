@@ -28,3 +28,22 @@ export function renderPagination (totalPages, currentPage = 1) {
   }
   paginationContainer.innerHTML = html
 }
+
+export function renderAllLocations (response, currentPage) {
+const { results, info } = response
+let html = ''
+results.forEach(location => {
+  html += `
+    <div class="location">
+      <div class="location_info">
+        <h2>${location.name}</h2>
+        <p>Type: ${location.type}</p>
+        <p>Dimension: ${location.dimension}</p>
+        <p>Residents: ${location.residents.length}</p>
+      </div>
+    </div>
+    `
+  })
+   document.querySelector('.locations').innerHTML = html 
+   renderPagination(info.pages, currentPage)
+   }
