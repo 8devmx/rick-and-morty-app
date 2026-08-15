@@ -97,9 +97,37 @@ nav ul a {
   font-size: 1rem;
 }
 
-.filter_bar input {
+.search_field {
+  position: relative;
   flex: 1;
   min-width: 150px;
+}
+
+.filter_bar input {
+  width: 100%;
+  padding-right: 44px;
+}
+
+.filter_bar .search_field button {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #535353;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.filter_bar .search_field button:hover {
+  background: #ddd;
+  color: crimson;
 }
 
 .filter_bar button {
@@ -398,6 +426,16 @@ footer {
   .filter_bar select,
   .filter_bar button {
     width: 100%;
+  }
+
+  .search_field {
+    width: 100%;
+  }
+
+  .filter_bar .search_field button {
+    width: 40px;
+    height: 32px;
+    flex: 0 0 40px;
   }
 
   .episode_character_grid {
