@@ -20,14 +20,7 @@ export default function renderAllCharacters (response, currentPage) {
   document.querySelector('.characters').innerHTML = html
   renderPagination(info.pages, currentPage)
 }
-export function renderPagination (totalPages, currentPage = 1) {
-  let html = ''
-  const paginationContainer = document.querySelector('#pagination')
-  for (let i = 1; i <= totalPages; i++) {
-    html += `<a class="pagination_button ${i === parseInt(currentPage) ? 'active' : ''}" href="${i}">${i}</a>`
-  }
-  paginationContainer.innerHTML = html
-}
+
 
 export function renderAllLocations (response, currentPage) {
 const { results, info } = response
@@ -44,6 +37,35 @@ results.forEach(location => {
     </div>
     `
   })
-   document.querySelector('.locations').innerHTML = html 
+   document.querySelector('.characters').innerHTML = html 
    renderPagination(info.pages, currentPage)
    }
+
+
+export function renderAllEpisodes (response, currentPage) {
+  const { results, info } = response
+  let html = ''
+  results.forEach(episode => {
+    html += `
+      <div class="episode">
+        <div class="episode_info">
+          <h2>${episode.name}</h2>
+          <p>Episode: ${episode.episode}</p>
+          <p>Air Date: ${episode.air_date}</p>
+        </div>
+      </div>
+    `
+  })
+  document.querySelector('.characters').innerHTML = html
+  renderPagination(info.pages, currentPage)
+}
+
+export function renderPagination (totalPages, currentPage = 1) {
+  let html = ''
+  const paginationContainer = document.querySelector('#pagination')
+  for (let i = 1; i <= totalPages; i++) {
+    html += `<a class="pagination_button ${i === parseInt(currentPage) ? 'active' : ''}" href="${i}">${i}</a>`
+  }
+  paginationContainer.innerHTML = html
+}
+
