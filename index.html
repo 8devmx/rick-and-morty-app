@@ -17,6 +17,7 @@
       <ul>
         <li><a href="#" data-view="home">Home</a></li>
         <li><a href="#" data-view="characters">Characters</a></li>
+        <li><a href="#" data-view="locations">Locations</a></li>
         <li><a href="#" data-view="episodes">Episodes</a></li>
       </ul>
     </nav>
@@ -27,10 +28,20 @@
         <h2>Bienvenido a Rick and Morty</h2>
         <p>Explora los personajes y episodios de la serie.</p>
       </div>
+      <section class="random-section">
+        <button id="random-character-button" type="button">
+          Descubrir personaje aleatorio
+        </button>
+        <div id="random-character"></div>
+      </section>
     </section>
     <section id="characters" class="view">
       <div class="characters"></div>
       <div id="pagination"></div>
+    </section>
+    <section id="locations" class="view">
+      <div class="locations"></div>
+      <div id="location-pagination"></div>
     </section>
     <section id="episodes" class="view">
       <div class="episodes"></div>
