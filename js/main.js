@@ -1,54 +1,83 @@
-import fetchData from './api.js'
-import renderAllCharacters, { renderAllLocations, renderAllEpisodes, renderRandomCharacter } from './render.js'
-
-const paginationContainer = document.querySelector('#pagination')
-const locationPaginationContainer = document.querySelector('#location-pagination')
-const episodePaginationContainer = document.querySelector('#episode-pagination')
-const navLinks = document.querySelectorAll('nav ul a')
-const randomButton = document.querySelector('#random-character-button')
+import fetchData, { fetchMultiple } from './api.js'
+import renderAllCharacters, { renderAllLocations, renderAllEpisodes, renderRandomCharacter, renderCharacterModal, renderEpisodeModal } from './render.js'
+import { getJsonItem, setJsonItem } from './storage.js'
 
 let totalCharacters = 0
+let navLinks
 
-showView('characters')
-setActiveLink(document.querySelector('nav ul a[data-view="characters"]'))
-getCharacterByPage()
+document.addEventListener('DOMContentLoaded', () => {
+  const paginationContainer = document.querySelector('#pagination')
+  const locationPaginationContainer = document.querySelector('#location-pagination')
+  const episodePaginationContainer = document.querySelector('#episode-pagination')
+  const charactersContainer = document.querySelector('.characters')
+  const episodesContainer = document.querySelector('.episodes')
+  const randomButton = document.querySelector('#random-character-button')
+  navLinks = document.querySelectorAll('nav ul a')
 
-paginationContainer.addEventListener('click', function (e) {
-  e.preventDefault()
-  if (e.target.classList.contains('pagination_button')) {
-    const page = e.target.getAttribute('href')
-    getCharacterByPage(page)
-  }
-})
+  showView('characters')
+  setActiveLink(document.querySelector('nav ul a[data-view="characters"]'))
+  getCharacterByPage()
 
-locationPaginationContainer.addEventListener('click', function (e) {
-  e.preventDefault()
-  if (e.target.classList.contains('pagination_button')) {
-    const page = e.target.getAttribute('href')
-    getLocationByPage(page)
-  }
-})
-
-episodePaginationContainer.addEventListener('click', function (e) {
-  e.preventDefault()
-  if (e.target.classList.contains('pagination_button')) {
-    const page = e.target.getAttribute('href')
-    getEpisodesByPage(page)
-  }
-})
-
-navLinks.forEach(link => {
-  link.addEventListener('click', function (e) {
+  paginationContainer.addEventListener('click', function (e) {
     e.preventDefault()
-    const view = this.dataset.view
-    showView(view)
-    setActiveLink(this)
-    if (view === 'locations' && !document.querySelector('.locations').innerHTML) {
-      getLocationByPage()
+    if (e.target.classList.contains('pagination_button')) {
+      const page = e.target.getAttribute('href')
+      getCharacterByPage(page)
     }
-    if (view === 'episodes' && !document.querySelector('.episodes').innerHTML) {
-      getEpisodesByPage()
+  })
+
+  locationPaginationContainer.addEventListener('click', function (e) {
+    e.preventDefault()
+    if (e.target.classList.contains('pagination_button')) {
+      const page = e.target.getAttribute('href')
+      getLocationByPage(page)
     }
+  })
+
+  episodePaginationContainer.addEventListener('click', function (e) {
+    e.preventDefault()
+    if (e.target.classList.contains('pagination_button')) {
+      const page = e.target.getAttribute('href')
+      getEpisodesByPage(page)
+    }
+  })
+
+  charactersContainer.addEventListener('click', function (e) {
+    if (e.target.classList.contains('favorite_button')) return
+    const card = e.target.closest('.character')
+    if (card) openCharacterDetail(card.dataset.id)
+  })
+
+  episodesContainer.addEventListener('click', function (e) {
+    const card = e.target.closest('.episode')
+    if (card) openEpisodeDetail(card.dataset.id)
+  })
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', function (e) {
+      e.preventDefault()
+      const view = this.dataset.view
+      showView(view)
+      setActiveLink(this)
+      if (view === 'locations' && !document.querySelector('.locations').innerHTML) {
+        getLocationByPage()
+      }
+      if (view === 'episodes' && !document.querySelector('.episodes').innerHTML) {
+        getEpisodesByPage()
+      }
+    })
+  })
+
+  randomButton.addEventListener('click', async function () {
+    randomButton.disabled = true
+
+    const randomId = Math.floor(Math.random() * totalCharacters) + 1
+    const apiUrl = `https://rickandmortyapi.com/api/character/${randomId}`
+
+    const character = await fetchData(apiUrl)
+    renderRandomCharacter(character)
+
+    randomButton.disabled = false
   })
 })
 
@@ -63,35 +92,76 @@ function setActiveLink (activeLink) {
   activeLink.classList.add('active')
 }
 
+function getCachedPage (section, page) {
+  const cache = getJsonItem(`${section}_cache`, {})
+  return cache[page] || null
+}
+
+function cachePage (section, page, data) {
+  const cache = getJsonItem(`${section}_cache`, {})
+  cache[page] = data
+  setJsonItem(`${section}_cache`, cache)
+}
+
 async function getCharacterByPage (page = 1) {
+  const cached = getCachedPage('characters', page)
+  if (cached) {
+    totalCharacters = cached.info.count
+    renderAllCharacters(cached, page)
+    return
+  }
+
   const apiUrl = `https://rickandmortyapi.com/api/character?page=${page}`
   const response = await fetchData(apiUrl)
+  if (!response) return
 
   totalCharacters = response.info.count
-
+  cachePage('characters', page, response)
   renderAllCharacters(response, page)
 }
 
 async function getLocationByPage (page = 1) {
+  const cached = getCachedPage('locations', page)
+  if (cached) {
+    renderAllLocations(cached, page)
+    return
+  }
+
   const apiUrl = `https://rickandmortyapi.com/api/location?page=${page}`
   const response = await fetchData(apiUrl)
+  if (!response) return
+  cachePage('locations', page, response)
   renderAllLocations(response, page)
 }
 
 async function getEpisodesByPage (page = 1) {
+  const cached = getCachedPage('episodes', page)
+  if (cached) {
+    renderAllEpisodes(cached, page)
+    return
+  }
+
   const apiUrl = `https://rickandmortyapi.com/api/episode?page=${page}`
   const response = await fetchData(apiUrl)
+  if (!response) return
+  cachePage('episodes', page, response)
   renderAllEpisodes(response, page)
 }
 
-randomButton.addEventListener('click', async function () {
-  randomButton.disabled = true
-
-  const randomId = Math.floor(Math.random() * totalCharacters) + 1
-  const apiUrl = `https://rickandmortyapi.com/api/character/${randomId}`
-
+async function openCharacterDetail (id) {
+  const apiUrl = `https://rickandmortyapi.com/api/character/${id}`
   const character = await fetchData(apiUrl)
-  renderRandomCharacter(character)
+  if (!character) return
 
-  randomButton.disabled = false
-})
+  const episodes = await fetchMultiple(character.episode)
+  renderCharacterModal(character, episodes)
+}
+
+async function openEpisodeDetail (id) {
+  const apiUrl = `https://rickandmortyapi.com/api/episode/${id}`
+  const episode = await fetchData(apiUrl)
+  if (!episode) return
+
+  const characters = await fetchMultiple(episode.characters)
+  renderEpisodeModal(episode, characters)
+}

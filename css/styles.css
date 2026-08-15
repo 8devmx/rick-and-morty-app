@@ -142,6 +142,13 @@ footer {
   color: #fff;
 }
 
+#pagination a.cached,
+#location-pagination a.cached,
+#episode-pagination a.cached {
+  background: green;
+  color: #fff;
+}
+
 #pagination a.active,
 #location-pagination a.active,
 #episode-pagination a.active {
@@ -199,4 +206,118 @@ footer {
 
 .location p {
   margin-bottom: 5px;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal_box {
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 300px;
+  text-align: center;
+}
+
+.modal_box button {
+  margin-top: 15px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background: crimson;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal_box_large {
+  position: relative;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.modal_box_large .modal_close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  margin-top: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #535353;
+  cursor: pointer;
+}
+
+#detail-modal-content img {
+  display: block;
+  width: 100%;
+  max-width: 220px;
+  margin: 0 auto 15px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+#detail-modal-content h2 {
+  margin-bottom: 10px;
+}
+
+#detail-modal-content p {
+  margin-bottom: 5px;
+}
+
+.episode_chip_list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.episode_chip {
+  border: 1px solid #535353;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.85rem;
+}
+
+.episode_character_grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.episode_character {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+}
+
+.episode_character img {
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.episode_character p {
+  margin-top: 5px;
+  font-size: 0.85rem;
+}
+
+.character,
+.episode {
+  cursor: pointer;
 }

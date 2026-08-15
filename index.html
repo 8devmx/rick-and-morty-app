@@ -51,6 +51,18 @@
   <footer>
     <p>Creado con ❤️ por los alumnos reprobados de Ingeniería de Requisitos de la UNID</p>
   </footer>
+  <div id="error-modal" class="modal" hidden>
+    <div class="modal_box">
+      <p id="error-modal-message"></p>
+      <button type="button" id="error-modal-close">Cerrar</button>
+    </div>
+  </div>
+  <div id="detail-modal" class="modal" hidden>
+    <div class="modal_box modal_box_large">
+      <button type="button" id="detail-modal-close" class="modal_close" aria-label="Cerrar">&times;</button>
+      <div id="detail-modal-content"></div>
+    </div>
+  </div>
   <script type="module" src="js/main.js"></script>
 </body>
 
