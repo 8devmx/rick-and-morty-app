@@ -28,3 +28,23 @@ export function renderPagination (totalPages, currentPage = 1) {
   }
   paginationContainer.innerHTML = html
 }
+
+export function renderAllEpisodes (response, currentPage) {
+  const { results, info } = response
+  const episodes = results
+  let html = ''
+  episodes.forEach(episode => {
+    html += `
+      <div class="character">
+        <div class="character_info">
+          <h2>${episode.name}</h2>
+          <p>Episode: ${episode.episode}</p>
+          <p>Date: ${episode.air_date}</p>
+        </div>
+      </div>
+    `
+  })
+  document.querySelector('.characters').innerHTML = html
+  renderPagination(info.pages, currentPage)
+}
+
