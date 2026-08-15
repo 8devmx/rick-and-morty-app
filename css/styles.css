@@ -88,3 +88,55 @@ footer {
   background: #535353;
   color: #fff;
 }
+
+.locations {
+  display: none;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+.location {
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  padding: 25px;
+  text-align: center;
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.location_info h2 {
+  margin-bottom: 20px;
+}
+
+.location_info p {
+  margin: 8px 0;
+}
+
+.episodes {
+  display: none;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+.episode {
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  padding: 25px;
+  text-align: center;
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.episode_info h2 {
+  margin-bottom: 20px;
+}
+
+.episode_info p {
+  margin: 8px 0;
+}

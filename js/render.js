@@ -20,6 +20,46 @@ export default function renderAllCharacters (response, currentPage) {
   document.querySelector('.characters').innerHTML = html
   renderPagination(info.pages, currentPage)
 }
+
+
+export function renderAllLocations (response, currentPage) {
+const { results, info } = response
+let html = ''
+results.forEach(location => {
+  html += `
+    <div class="location">
+      <div class="location_info">
+        <h2>${location.name}</h2>
+        <p>Type: ${location.type}</p>
+        <p>Dimension: ${location.dimension}</p>
+        <p>Residents: ${location.residents.length}</p>
+      </div>
+    </div>
+    `
+  })
+   document.querySelector('.characters').innerHTML = html 
+   renderPagination(info.pages, currentPage)
+   }
+
+
+export function renderAllEpisodes (response, currentPage) {
+  const { results, info } = response
+  let html = ''
+  results.forEach(episode => {
+    html += `
+      <div class="episode">
+        <div class="episode_info">
+          <h2>${episode.name}</h2>
+          <p>Episode: ${episode.episode}</p>
+          <p>Air Date: ${episode.air_date}</p>
+        </div>
+      </div>
+    `
+  })
+  document.querySelector('.characters').innerHTML = html
+  renderPagination(info.pages, currentPage)
+}
+
 export function renderPagination (totalPages, currentPage = 1) {
   let html = ''
   const paginationContainer = document.querySelector('#pagination')
@@ -27,24 +67,5 @@ export function renderPagination (totalPages, currentPage = 1) {
     html += `<a class="pagination_button ${i === parseInt(currentPage) ? 'active' : ''}" href="${i}">${i}</a>`
   }
   paginationContainer.innerHTML = html
-}
-
-export function renderAllEpisodes (response, currentPage) {
-  const { results, info } = response
-  const episodes = results
-  let html = ''
-  episodes.forEach(episode => {
-    html += `
-      <div class="character">
-        <div class="character_info">
-          <h2>${episode.name}</h2>
-          <p>Episode: ${episode.episode}</p>
-          <p>Date: ${episode.air_date}</p>
-        </div>
-      </div>
-    `
-  })
-  document.querySelector('.characters').innerHTML = html
-  renderPagination(info.pages, currentPage)
 }
 
