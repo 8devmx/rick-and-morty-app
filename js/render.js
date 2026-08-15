@@ -43,7 +43,7 @@ export default function renderAllCharacters (response, currentPage) {
           <p>Status: ${character.status}</p>
           <p>Species: ${character.species}</p>
           <p>Gender: ${character.gender}</p>
-        
+
           <button
     class="favorite_button"
     data-id="${character.id}">
@@ -71,7 +71,27 @@ document.querySelectorAll('.favorite_button').forEach(button => {
 
   renderPagination(info.pages, currentPage)
 }
-export function renderEpisodes (response, currentPage) {
+
+export function renderAllLocations (response, currentPage) {
+  const { results, info } = response
+  let html = ''
+  results.forEach(location => {
+    html += `
+      <div class="location">
+        <div class="location_info">
+          <h2>${location.name}</h2>
+          <p>Type: ${location.type}</p>
+          <p>Dimension: ${location.dimension}</p>
+          <p>Residents: ${location.residents.length}</p>
+        </div>
+      </div>
+    `
+  })
+  document.querySelector('.locations').innerHTML = html
+  renderPagination(info.pages, currentPage, 'location-pagination')
+}
+
+export function renderAllEpisodes (response, currentPage) {
   const { results, info } = response
   let html = ''
   results.forEach(episode => {
@@ -88,6 +108,7 @@ export function renderEpisodes (response, currentPage) {
   document.querySelector('.episodes').innerHTML = html
   renderPagination(info.pages, currentPage, 'episode-pagination')
 }
+
 export function renderPagination (totalPages, currentPage = 1, containerId = 'pagination') {
   let html = ''
   const paginationContainer = document.querySelector(`#${containerId}`)
@@ -96,7 +117,6 @@ export function renderPagination (totalPages, currentPage = 1, containerId = 'pa
   }
   paginationContainer.innerHTML = html
 }
-
 
 export function renderRandomCharacter (character) {
   const html = `

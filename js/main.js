@@ -1,21 +1,19 @@
 import fetchData from './api.js'
-
-import { renderRandomCharacter } from './render.js'
-
-import renderAllCharacters from './render.js'
-import renderAllCharacters, { renderEpisodes } from './render.js'
+import renderAllCharacters, { renderAllLocations, renderAllEpisodes, renderRandomCharacter } from './render.js'
 
 const paginationContainer = document.querySelector('#pagination')
+const locationPaginationContainer = document.querySelector('#location-pagination')
 const episodePaginationContainer = document.querySelector('#episode-pagination')
 const navLinks = document.querySelectorAll('nav ul a')
-
 const randomButton = document.querySelector('#random-character-button')
+
 let totalCharacters = 0
+
 showView('characters')
 setActiveLink(document.querySelector('nav ul a[data-view="characters"]'))
 getCharacterByPage()
 
-paginationContainer.addEventListener('click', async function (e) {
+paginationContainer.addEventListener('click', function (e) {
   e.preventDefault()
   if (e.target.classList.contains('pagination_button')) {
     const page = e.target.getAttribute('href')
@@ -23,7 +21,15 @@ paginationContainer.addEventListener('click', async function (e) {
   }
 })
 
-episodePaginationContainer.addEventListener('click', async function (e) {
+locationPaginationContainer.addEventListener('click', function (e) {
+  e.preventDefault()
+  if (e.target.classList.contains('pagination_button')) {
+    const page = e.target.getAttribute('href')
+    getLocationByPage(page)
+  }
+})
+
+episodePaginationContainer.addEventListener('click', function (e) {
   e.preventDefault()
   if (e.target.classList.contains('pagination_button')) {
     const page = e.target.getAttribute('href')
@@ -37,6 +43,9 @@ navLinks.forEach(link => {
     const view = this.dataset.view
     showView(view)
     setActiveLink(this)
+    if (view === 'locations' && !document.querySelector('.locations').innerHTML) {
+      getLocationByPage()
+    }
     if (view === 'episodes' && !document.querySelector('.episodes').innerHTML) {
       getEpisodesByPage()
     }
@@ -58,11 +67,22 @@ async function getCharacterByPage (page = 1) {
   const apiUrl = `https://rickandmortyapi.com/api/character?page=${page}`
   const response = await fetchData(apiUrl)
 
-totalCharacters = response.info.count
+  totalCharacters = response.info.count
 
   renderAllCharacters(response, page)
 }
 
+async function getLocationByPage (page = 1) {
+  const apiUrl = `https://rickandmortyapi.com/api/location?page=${page}`
+  const response = await fetchData(apiUrl)
+  renderAllLocations(response, page)
+}
+
+async function getEpisodesByPage (page = 1) {
+  const apiUrl = `https://rickandmortyapi.com/api/episode?page=${page}`
+  const response = await fetchData(apiUrl)
+  renderAllEpisodes(response, page)
+}
 
 randomButton.addEventListener('click', async function () {
   randomButton.disabled = true
@@ -75,8 +95,3 @@ randomButton.addEventListener('click', async function () {
 
   randomButton.disabled = false
 })
-async function getEpisodesByPage (page = 1) {
-  const apiUrl = `https://rickandmortyapi.com/api/episode?page=${page}`
-  const response = await fetchData(apiUrl)
-  renderEpisodes(response, page)
-}
