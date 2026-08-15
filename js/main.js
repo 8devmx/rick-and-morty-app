@@ -1,10 +1,16 @@
 import fetchData from './api.js'
+
+import { renderRandomCharacter } from './render.js'
+
+import renderAllCharacters from './render.js'
 import renderAllCharacters, { renderEpisodes } from './render.js'
 
 const paginationContainer = document.querySelector('#pagination')
 const episodePaginationContainer = document.querySelector('#episode-pagination')
 const navLinks = document.querySelectorAll('nav ul a')
 
+const randomButton = document.querySelector('#random-character-button')
+let totalCharacters = 0
 showView('characters')
 setActiveLink(document.querySelector('nav ul a[data-view="characters"]'))
 getCharacterByPage()
@@ -51,9 +57,24 @@ function setActiveLink (activeLink) {
 async function getCharacterByPage (page = 1) {
   const apiUrl = `https://rickandmortyapi.com/api/character?page=${page}`
   const response = await fetchData(apiUrl)
+
+totalCharacters = response.info.count
+
   renderAllCharacters(response, page)
 }
 
+
+randomButton.addEventListener('click', async function () {
+  randomButton.disabled = true
+
+  const randomId = Math.floor(Math.random() * totalCharacters) + 1
+  const apiUrl = `https://rickandmortyapi.com/api/character/${randomId}`
+
+  const character = await fetchData(apiUrl)
+  renderRandomCharacter(character)
+
+  randomButton.disabled = false
+})
 async function getEpisodesByPage (page = 1) {
   const apiUrl = `https://rickandmortyapi.com/api/episode?page=${page}`
   const response = await fetchData(apiUrl)
