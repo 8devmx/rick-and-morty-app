@@ -9,6 +9,10 @@ export default async function fetchData (url) {
       return null
     }
 
+    if (response.status === 404) {
+      return null
+    }
+
     if (!response.ok) {
       showModal('Ocurrió un error al obtener los datos. Intenta de nuevo más tarde.')
       return null

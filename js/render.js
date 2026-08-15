@@ -31,7 +31,7 @@ function toggleFavorite(characterId) {
 
     return favorites.includes(characterId)
 }
-export default function renderAllCharacters (response, currentPage) {
+export default function renderAllCharacters (response, currentPage, cacheKey = 'characters_cache') {
   const { results, info } = response
   const characters = results
   let html = ''
@@ -72,7 +72,12 @@ document.querySelectorAll('.favorite_button').forEach(button => {
     })
 })
 
-  renderPagination(info.pages, currentPage, 'pagination', 'characters_cache')
+  renderPagination(info.pages, currentPage, 'pagination', cacheKey)
+}
+
+export function renderNoCharacters () {
+  document.querySelector('.characters').innerHTML = '<p class="no_results">No se encontraron personajes con esos filtros.</p>'
+  document.querySelector('#pagination').innerHTML = ''
 }
 
 export function renderAllLocations (response, currentPage) {

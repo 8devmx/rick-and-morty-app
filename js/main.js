@@ -1,9 +1,10 @@
 import fetchData, { fetchMultiple } from './api.js'
-import renderAllCharacters, { renderAllLocations, renderAllEpisodes, renderRandomCharacter, renderCharacterModal, renderEpisodeModal } from './render.js'
+import renderAllCharacters, { renderAllLocations, renderAllEpisodes, renderRandomCharacter, renderCharacterModal, renderEpisodeModal, renderNoCharacters } from './render.js'
 import { getJsonItem, setJsonItem } from './storage.js'
 
 let totalCharacters = 0
 let navLinks
+const characterFilters = { name: '', status: '', species: '', gender: '' }
 
 document.addEventListener('DOMContentLoaded', () => {
   const paginationContainer = document.querySelector('#pagination')
@@ -12,6 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const charactersContainer = document.querySelector('.characters')
   const episodesContainer = document.querySelector('.episodes')
   const randomButton = document.querySelector('#random-character-button')
+  const nameInput = document.querySelector('#character-search-name')
+  const speciesSelect = document.querySelector('#character-search-species')
+  const statusSelect = document.querySelector('#character-filter-status')
+  const genderSelect = document.querySelector('#character-filter-gender')
+  const searchButton = document.querySelector('#character-search-button')
   navLinks = document.querySelectorAll('nav ul a')
 
   showView('characters')
@@ -46,6 +52,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.classList.contains('favorite_button')) return
     const card = e.target.closest('.character')
     if (card) openCharacterDetail(card.dataset.id)
+  })
+
+  searchButton.addEventListener('click', () => {
+    characterFilters.name = nameInput.value.trim()
+    characterFilters.species = speciesSelect.value
+    characterFilters.status = statusSelect.value
+    characterFilters.gender = genderSelect.value
+    getCharacterByPage(1)
   })
 
   episodesContainer.addEventListener('click', function (e) {
@@ -103,21 +117,43 @@ function cachePage (section, page, data) {
   setJsonItem(`${section}_cache`, cache)
 }
 
+function hasActiveCharacterFilters () {
+  return Object.values(characterFilters).some(value => value !== '')
+}
+
+function buildCharacterUrl (page) {
+  const params = new URLSearchParams({ page })
+  if (characterFilters.name) params.set('name', characterFilters.name)
+  if (characterFilters.status) params.set('status', characterFilters.status)
+  if (characterFilters.species) params.set('species', characterFilters.species)
+  if (characterFilters.gender) params.set('gender', characterFilters.gender)
+  return `https://rickandmortyapi.com/api/character?${params.toString()}`
+}
+
 async function getCharacterByPage (page = 1) {
-  const cached = getCachedPage('characters', page)
-  if (cached) {
-    totalCharacters = cached.info.count
-    renderAllCharacters(cached, page)
+  const filtered = hasActiveCharacterFilters()
+
+  if (!filtered) {
+    const cached = getCachedPage('characters', page)
+    if (cached) {
+      totalCharacters = cached.info.count
+      renderAllCharacters(cached, page)
+      return
+    }
+  }
+
+  const apiUrl = buildCharacterUrl(page)
+  const response = await fetchData(apiUrl)
+  if (!response) {
+    if (filtered) renderNoCharacters()
     return
   }
 
-  const apiUrl = `https://rickandmortyapi.com/api/character?page=${page}`
-  const response = await fetchData(apiUrl)
-  if (!response) return
-
-  totalCharacters = response.info.count
-  cachePage('characters', page, response)
-  renderAllCharacters(response, page)
+  if (!filtered) {
+    totalCharacters = response.info.count
+    cachePage('characters', page, response)
+  }
+  renderAllCharacters(response, page, filtered ? null : 'characters_cache')
 }
 
 async function getLocationByPage (page = 1) {
