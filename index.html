@@ -15,19 +15,84 @@
     </div>
     <nav>
       <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Characters</a></li>
-        <li><a href="#">Episodes</a></li>
+        <li><a href="#" data-view="home">Home</a></li>
+        <li><a href="#" data-view="characters">Characters</a></li>
+        <li><a href="#" data-view="locations">Locations</a></li>
+        <li><a href="#" data-view="episodes">Episodes</a></li>
       </ul>
     </nav>
   </header>
   <div id="app">
-    <div class="characters"></div>
-    <div id="pagination"></div>
+    <section id="home" class="view">
+      <div class="hero">
+        <h2>Bienvenido a Rick and Morty</h2>
+        <p>Explora los personajes y episodios de la serie.</p>
+      </div>
+      <section class="random-section">
+        <button id="random-character-button" type="button">
+          Descubrir personaje aleatorio
+        </button>
+        <div id="random-character"></div>
+      </section>
+    </section>
+    <section id="characters" class="view">
+      <div class="filter_bar">
+        <input type="text" id="character-search-name" placeholder="Buscar por nombre...">
+        <select id="character-search-species">
+          <option value="">Especie: todas</option>
+          <option value="Human">Human</option>
+          <option value="Alien">Alien</option>
+          <option value="Humanoid">Humanoid</option>
+          <option value="Robot">Robot</option>
+          <option value="Animal">Animal</option>
+          <option value="Mythological Creature">Mythological Creature</option>
+          <option value="Cronenberg">Cronenberg</option>
+          <option value="Disease">Disease</option>
+          <option value="Poopybutthole">Poopybutthole</option>
+          <option value="unknown">Unknown</option>
+        </select>
+        <select id="character-filter-status">
+          <option value="">Status: todos</option>
+          <option value="alive">Alive</option>
+          <option value="dead">Dead</option>
+          <option value="unknown">Unknown</option>
+        </select>
+        <select id="character-filter-gender">
+          <option value="">Gender: todos</option>
+          <option value="female">Female</option>
+          <option value="male">Male</option>
+          <option value="genderless">Genderless</option>
+          <option value="unknown">Unknown</option>
+        </select>
+        <button type="button" id="character-search-button">Buscar</button>
+      </div>
+      <div class="characters"></div>
+      <div id="pagination"></div>
+    </section>
+    <section id="locations" class="view">
+      <div class="locations"></div>
+      <div id="location-pagination"></div>
+    </section>
+    <section id="episodes" class="view">
+      <div class="episodes"></div>
+      <div id="episode-pagination"></div>
+    </section>
   </div>
   <footer>
     <p>Creado con ❤️ por los alumnos reprobados de Ingeniería de Requisitos de la UNID</p>
   </footer>
+  <div id="error-modal" class="modal" hidden>
+    <div class="modal_box">
+      <p id="error-modal-message"></p>
+      <button type="button" id="error-modal-close">Cerrar</button>
+    </div>
+  </div>
+  <div id="detail-modal" class="modal" hidden>
+    <div class="modal_box modal_box_large">
+      <button type="button" id="detail-modal-close" class="modal_close" aria-label="Cerrar">&times;</button>
+      <div id="detail-modal-content"></div>
+    </div>
+  </div>
   <script type="module" src="js/main.js"></script>
 </body>
 
