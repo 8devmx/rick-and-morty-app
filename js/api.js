@@ -4,19 +4,7 @@ export default async function fetchData (url) {
   try {
     const response = await fetch(url)
 
-    if (response.status === 429) {
-      showModal('Se han hecho demasiadas solicitudes, intenta de nuevo en un momento.')
-      return null
-    }
-
-    if (response.status === 404) {
-      return null
-    }
-
-    if (!response.ok) {
-      showModal('Ocurrió un error al obtener los datos. Intenta de nuevo más tarde.')
-      return null
-    }
+    if (hasError(response)) return null
 
     return await response.json()
   } catch (error) {
@@ -24,6 +12,24 @@ export default async function fetchData (url) {
     showModal('No se pudo conectar con el servidor. Intenta de nuevo.')
     return null
   }
+}
+
+function hasError (response) {
+  if (response.status === 429) {
+    showModal('Se han hecho demasiadas solicitudes, intenta de nuevo en un momento.')
+    return true
+  }
+
+  if (response.status === 404) {
+    return true
+  }
+
+  if (!response.ok) {
+    showModal('Ocurrió un error al obtener los datos. Intenta de nuevo más tarde.')
+    return true
+  }
+
+  return false
 }
 
 export async function fetchMultiple (urls) {
