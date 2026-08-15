@@ -14,10 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const episodesContainer = document.querySelector('.episodes')
   const randomButton = document.querySelector('#random-character-button')
   const nameInput = document.querySelector('#character-search-name')
+  const clearSearchButton = document.querySelector('#character-clear-search')
   const speciesSelect = document.querySelector('#character-search-species')
   const statusSelect = document.querySelector('#character-filter-status')
   const genderSelect = document.querySelector('#character-filter-gender')
-  const searchButton = document.querySelector('#character-search-button')
   navLinks = document.querySelectorAll('nav ul a')
 
   showView('characters')
@@ -54,11 +54,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (card) openCharacterDetail(card.dataset.id)
   })
 
-  searchButton.addEventListener('click', () => {
+  nameInput.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return
+
     characterFilters.name = nameInput.value.trim()
     characterFilters.species = speciesSelect.value
     characterFilters.status = statusSelect.value
     characterFilters.gender = genderSelect.value
+    getCharacterByPage(1)
+  })
+
+  clearSearchButton.addEventListener('click', () => {
+    nameInput.value = ''
+    speciesSelect.value = ''
+    statusSelect.value = ''
+    genderSelect.value = ''
+    characterFilters.name = ''
+    characterFilters.species = ''
+    characterFilters.status = ''
+    characterFilters.gender = ''
     getCharacterByPage(1)
   })
 

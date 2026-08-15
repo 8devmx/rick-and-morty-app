@@ -37,7 +37,10 @@
     </section>
     <section id="characters" class="view">
       <div class="filter_bar">
-        <input type="text" id="character-search-name" placeholder="Buscar por nombre...">
+        <div class="search_field">
+          <input type="text" id="character-search-name" placeholder="Buscar por nombre...">
+          <button type="button" id="character-clear-search" aria-label="Limpiar busqueda">&times;</button>
+        </div>
         <select id="character-search-species">
           <option value="">Especie: todas</option>
           <option value="Human">Human</option>
@@ -64,7 +67,6 @@
           <option value="genderless">Genderless</option>
           <option value="unknown">Unknown</option>
         </select>
-        <button type="button" id="character-search-button">Buscar</button>
       </div>
       <div class="characters"></div>
       <div id="pagination"></div>
