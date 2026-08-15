@@ -1,11 +1,14 @@
+import { showDetailModal } from './modal.js'
+import { getJsonItem, setJsonItem } from './storage.js'
+
 // Obtener los personajes favoritos guardados en localStorage
 function getFavorites() {
-    return JSON.parse(localStorage.getItem('favorites')) || []
+    return getJsonItem('favorites', [])
 }
 
 // Guardar favoritos en localStorage
 function saveFavorites(favorites) {
-    localStorage.setItem('favorites', JSON.stringify(favorites))
+    setJsonItem('favorites', favorites)
 }
 
 // Comprobar si un personaje está en favoritos
@@ -28,13 +31,13 @@ function toggleFavorite(characterId) {
 
     return favorites.includes(characterId)
 }
-export default function renderAllCharacters (response, currentPage) {
+export default function renderAllCharacters (response, currentPage, cacheKey = 'characters_cache') {
   const { results, info } = response
   const characters = results
   let html = ''
   characters.forEach(character => {
     html += `
-      <div class="character">
+      <div class="character" data-id="${character.id}">
         <div class="character_img">
           <img src="${character.image}" alt="">
         </div>
@@ -69,7 +72,12 @@ document.querySelectorAll('.favorite_button').forEach(button => {
     })
 })
 
-  renderPagination(info.pages, currentPage)
+  renderPagination(info.pages, currentPage, 'pagination', cacheKey)
+}
+
+export function renderNoCharacters () {
+  document.querySelector('.characters').innerHTML = '<p class="no_results">No se encontraron personajes con esos filtros.</p>'
+  document.querySelector('#pagination').innerHTML = ''
 }
 
 export function renderAllLocations (response, currentPage) {
@@ -88,7 +96,7 @@ export function renderAllLocations (response, currentPage) {
     `
   })
   document.querySelector('.locations').innerHTML = html
-  renderPagination(info.pages, currentPage, 'location-pagination')
+  renderPagination(info.pages, currentPage, 'location-pagination', 'locations_cache')
 }
 
 export function renderAllEpisodes (response, currentPage) {
@@ -96,7 +104,7 @@ export function renderAllEpisodes (response, currentPage) {
   let html = ''
   results.forEach(episode => {
     html += `
-      <div class="episode">
+      <div class="episode" data-id="${episode.id}">
         <div class="episode_info">
           <h2>${episode.name}</h2>
           <p>Episode: ${episode.episode}</p>
@@ -106,14 +114,18 @@ export function renderAllEpisodes (response, currentPage) {
     `
   })
   document.querySelector('.episodes').innerHTML = html
-  renderPagination(info.pages, currentPage, 'episode-pagination')
+  renderPagination(info.pages, currentPage, 'episode-pagination', 'episodes_cache')
 }
 
-export function renderPagination (totalPages, currentPage = 1, containerId = 'pagination') {
+export function renderPagination (totalPages, currentPage = 1, containerId = 'pagination', cacheKey = null) {
+  const cache = cacheKey ? getJsonItem(cacheKey, {}) : {}
   let html = ''
   const paginationContainer = document.querySelector(`#${containerId}`)
   for (let i = 1; i <= totalPages; i++) {
-    html += `<a class="pagination_button ${i === parseInt(currentPage) ? 'active' : ''}" href="${i}">${i}</a>`
+    const classes = ['pagination_button']
+    if (i === parseInt(currentPage)) classes.push('active')
+    if (cache[i]) classes.push('cached')
+    html += `<a class="${classes.join(' ')}" href="${i}">${i}</a>`
   }
   paginationContainer.innerHTML = html
 }
@@ -132,4 +144,45 @@ export function renderRandomCharacter (character) {
   `
 
   document.querySelector('#random-character').innerHTML = html
+}
+
+export function renderCharacterModal (character, episodes) {
+  const episodesHtml = episodes
+    .map(episode => `<span class="episode_chip">${episode.episode}</span>`)
+    .join('')
+
+  const html = `
+    <img src="${character.image}" alt="${character.name}">
+    <h2>${character.name}</h2>
+    <p>Status: ${character.status}</p>
+    <p>Species: ${character.species}</p>
+    <p>Gender: ${character.gender}</p>
+    <p>Origin: ${character.origin.name}</p>
+    <p>Location: ${character.location.name}</p>
+    <p>Episodes: ${character.episode.length}</p>
+    <div class="episode_chip_list">${episodesHtml}</div>
+  `
+
+  showDetailModal(html)
+}
+
+export function renderEpisodeModal (episode, characters) {
+  const charactersHtml = characters
+    .map(character => `
+      <div class="episode_character">
+        <img src="${character.image}" alt="${character.name}">
+        <p>${character.name}</p>
+      </div>
+    `)
+    .join('')
+
+  const html = `
+    <h2>${episode.name}</h2>
+    <p>Episode: ${episode.episode}</p>
+    <p>Air Date: ${episode.air_date}</p>
+    <p>Characters: ${episode.characters.length}</p>
+    <div class="episode_character_grid">${charactersHtml}</div>
+  `
+
+  showDetailModal(html)
 }

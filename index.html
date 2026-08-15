@@ -36,6 +36,36 @@
       </section>
     </section>
     <section id="characters" class="view">
+      <div class="filter_bar">
+        <input type="text" id="character-search-name" placeholder="Buscar por nombre...">
+        <select id="character-search-species">
+          <option value="">Especie: todas</option>
+          <option value="Human">Human</option>
+          <option value="Alien">Alien</option>
+          <option value="Humanoid">Humanoid</option>
+          <option value="Robot">Robot</option>
+          <option value="Animal">Animal</option>
+          <option value="Mythological Creature">Mythological Creature</option>
+          <option value="Cronenberg">Cronenberg</option>
+          <option value="Disease">Disease</option>
+          <option value="Poopybutthole">Poopybutthole</option>
+          <option value="unknown">Unknown</option>
+        </select>
+        <select id="character-filter-status">
+          <option value="">Status: todos</option>
+          <option value="alive">Alive</option>
+          <option value="dead">Dead</option>
+          <option value="unknown">Unknown</option>
+        </select>
+        <select id="character-filter-gender">
+          <option value="">Gender: todos</option>
+          <option value="female">Female</option>
+          <option value="male">Male</option>
+          <option value="genderless">Genderless</option>
+          <option value="unknown">Unknown</option>
+        </select>
+        <button type="button" id="character-search-button">Buscar</button>
+      </div>
       <div class="characters"></div>
       <div id="pagination"></div>
     </section>
@@ -51,6 +81,18 @@
   <footer>
     <p>Creado con ❤️ por los alumnos reprobados de Ingeniería de Requisitos de la UNID</p>
   </footer>
+  <div id="error-modal" class="modal" hidden>
+    <div class="modal_box">
+      <p id="error-modal-message"></p>
+      <button type="button" id="error-modal-close">Cerrar</button>
+    </div>
+  </div>
+  <div id="detail-modal" class="modal" hidden>
+    <div class="modal_box modal_box_large">
+      <button type="button" id="detail-modal-close" class="modal_close" aria-label="Cerrar">&times;</button>
+      <div id="detail-modal-content"></div>
+    </div>
+  </div>
   <script type="module" src="js/main.js"></script>
 </body>
 
