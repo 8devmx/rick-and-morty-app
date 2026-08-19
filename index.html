@@ -25,21 +25,21 @@
   <div id="app">
     <section id="home" class="view">
       <div class="hero">
-        <h2>Bienvenido a Rick and Morty</h2>
-        <p>Explora los personajes y episodios de la serie.</p>
+        <h2>Welcome to Rick and Morty</h2>
+        <p>Explore the characters and episodes of the series.</p>
       </div>
       <section class="random-section">
         <button id="random-character-button" type="button">
-          Descubrir personaje aleatorio
+          Discover Random Character
         </button>
         <div id="random-character"></div>
       </section>
     </section>
     <section id="characters" class="view">
       <div class="filter_bar">
-        <input type="text" id="character-search-name" placeholder="Buscar por nombre...">
+        <input type="text" id="character-search-name" placeholder="Search by name...">
         <select id="character-search-species">
-          <option value="">Especie: todas</option>
+          <option value="">Species: All</option>
           <option value="Human">Human</option>
           <option value="Alien">Alien</option>
           <option value="Humanoid">Humanoid</option>
@@ -52,19 +52,19 @@
           <option value="unknown">Unknown</option>
         </select>
         <select id="character-filter-status">
-          <option value="">Status: todos</option>
+          <option value="">Status: All</option>
           <option value="alive">Alive</option>
           <option value="dead">Dead</option>
           <option value="unknown">Unknown</option>
         </select>
         <select id="character-filter-gender">
-          <option value="">Gender: todos</option>
+          <option value="">Gender: All</option>
           <option value="female">Female</option>
           <option value="male">Male</option>
           <option value="genderless">Genderless</option>
           <option value="unknown">Unknown</option>
         </select>
-        <button type="button" id="character-search-button">Buscar</button>
+        <button type="button" id="character-search-button">Search</button>
       </div>
       <div class="characters"></div>
       <div id="pagination"></div>
@@ -79,17 +79,17 @@
     </section>
   </div>
   <footer>
-    <p>Creado con ❤️ por los alumnos reprobados de Ingeniería de Requisitos de la UNID</p>
+    <p>Created with ❤️ by the failed students of Software Requirements Engineering at UNID</p>
   </footer>
   <div id="error-modal" class="modal" hidden>
     <div class="modal_box">
       <p id="error-modal-message"></p>
-      <button type="button" id="error-modal-close">Cerrar</button>
+      <button type="button" id="error-modal-close">Close</button>
     </div>
   </div>
   <div id="detail-modal" class="modal" hidden>
     <div class="modal_box modal_box_large">
-      <button type="button" id="detail-modal-close" class="modal_close" aria-label="Cerrar">&times;</button>
+      <button type="button" id="detail-modal-close" class="modal_close" aria-label="Close">&times;</button>
       <div id="detail-modal-content"></div>
     </div>
   </div>
