@@ -130,6 +130,24 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 })
 
+charactersContainer.addEventListener('click', async function (e) {
+  const detailButton = e.target.closest('.character_detail_button')
+  if (!detailButton) return
+
+  const characterId = detailButton.dataset.characterId
+  const character = await fetchData(`https://rickandmortyapi.com/api/character/${characterId}`)
+  renderCharacterDetail(character)
+  modal.classList.add('is-open')
+  modal.setAttribute('aria-hidden', 'false')
+})
+
+modal.addEventListener('click', function (e) {
+  if (!e.target.matches('[data-close-modal]')) return
+  modal.classList.remove('is-open')
+  modal.setAttribute('aria-hidden', 'true')
+})
+
+
 function showView (view) {
   document.querySelectorAll('.view').forEach(section => {
     section.style.display = section.id === view ? 'block' : 'none'
