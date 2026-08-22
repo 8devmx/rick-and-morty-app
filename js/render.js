@@ -1,78 +1,46 @@
 import { showDetailModal } from './modal.js'
-import { getJsonItem, setJsonItem } from './storage.js'
+import { getJsonItem } from './storage.js'
+import { isFavorite } from './favorites.js'
 
-// Obtener los personajes favoritos guardados en localStorage
-function getFavorites() {
-    return getJsonItem('favorites', [])
+function characterCardTemplate (character) {
+  return `
+    <div class="character" data-id="${character.id}">
+      <div class="character_img">
+        <img src="${character.image}" alt="">
+      </div>
+      <div class="character_info">
+        <h2>${character.name}</h2>
+        <p>Status: ${character.status}</p>
+        <p>Species: ${character.species}</p>
+        <p>Gender: ${character.gender}</p>
+
+        <button
+          class="favorite_button"
+          data-id="${character.id}">
+          ${isFavorite(character.id)
+      ? '❤️ Quitar favorito'
+      : '🤍 Agregar favorito'}
+        </button>
+      </div>
+    </div>
+  `
 }
 
-// Guardar favoritos en localStorage
-function saveFavorites(favorites) {
-    setJsonItem('favorites', favorites)
-}
-
-// Comprobar si un personaje está en favoritos
-function isFavorite(characterId) {
-    const favorites = getFavorites()
-    return favorites.includes(characterId)
-}
-
-// Agregar o quitar un personaje de favoritos
-function toggleFavorite(characterId) {
-    let favorites = getFavorites()
-
-    if (favorites.includes(characterId)) {
-        favorites = favorites.filter(id => id !== characterId)
-    } else {
-        favorites.push(characterId)
-    }
-
-    saveFavorites(favorites)
-
-    return favorites.includes(characterId)
-}
 export default function renderAllCharacters (response, currentPage, cacheKey = 'characters_cache') {
   const { results, info } = response
-  const characters = results
-  let html = ''
-  characters.forEach(character => {
-    html += `
-      <div class="character" data-id="${character.id}">
-        <div class="character_img">
-          <img src="${character.image}" alt="">
-        </div>
-        <div class="character_info">
-          <h2>${character.name}</h2>
-          <p>Status: ${character.status}</p>
-          <p>Species: ${character.species}</p>
-          <p>Gender: ${character.gender}</p>
-
-          <button
-    class="favorite_button"
-    data-id="${character.id}">
-    ${isFavorite(character.id)
-        ? '❤️ Quitar favorito'
-        : '🤍 Agregar favorito'}
-</button>
-      </div>
-      </div>
-    `
-  })
-  document.querySelector('.characters').innerHTML = html
-
-document.querySelectorAll('.favorite_button').forEach(button => {
-    button.addEventListener('click', () => {
-        const characterId = Number(button.dataset.id)
-
-        const favorite = toggleFavorite(characterId)
-
-        button.textContent = favorite
-            ? '❤️ Quitar favorito'
-            : '🤍 Agregar favorito'
-    })
-})
-
+  document.querySelector('.characters').innerHTML = results.map(characterCardTemplate).join('')
   renderPagination(info.pages, currentPage, 'pagination', cacheKey)
+}
+
+export function renderFavorites (characters) {
+  const container = document.querySelector('.favorites')
+
+  if (!characters.length) {
+    container.innerHTML = '<p class="no_results">Aún no tienes personajes favoritos. Marca alguno con 🤍 desde Characters.</p>'
+    return
+  }
+
+  container.innerHTML = characters.map(characterCardTemplate).join('')
 }
 
 export function renderNoCharacters () {
