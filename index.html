@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rick and Morty</title>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=favorite" />
   <link rel="stylesheet" href="css/styles.css">
 </head>
 
@@ -19,6 +21,9 @@
         <li><a href="#" data-view="characters">Characters</a></li>
         <li><a href="#" data-view="locations">Locations</a></li>
         <li><a href="#" data-view="episodes">Episodes</a></li>
+        <li><a href="#" data-view="favorites"><span class="material-symbols-outlined">
+              favorite
+            </span></a></li>
       </ul>
     </nav>
   </header>
@@ -76,6 +81,10 @@
     <section id="episodes" class="view">
       <div class="episodes"></div>
       <div id="episode-pagination"></div>
+    </section>
+    <section id="favorites" class="view">
+      <div class="favorites"></div>
+      <div id="favorite-pagination"></div>
     </section>
   </div>
   <footer>

@@ -1,17 +1,25 @@
 import fetchData, { fetchMultiple } from './api.js'
-import renderAllCharacters, { renderAllLocations, renderAllEpisodes, renderRandomCharacter, renderCharacterModal, renderEpisodeModal, renderNoCharacters } from './render.js'
+import renderAllCharacters, { renderAllLocations, renderAllEpisodes, renderRandomCharacter, renderCharacterModal, renderEpisodeModal, renderNoCharacters, renderFavorites, renderPagination } from './render.js'
 import { getJsonItem, setJsonItem } from './storage.js'
+import { getFavoriteCharacters } from './helpers.js'
+import { toggleFavorite } from './favorites.js'
 
 let totalCharacters = 0
 let navLinks
 const characterFilters = { name: '', status: '', species: '', gender: '' }
 
+let favoritesData = []
+let currentFavoritesPage = 1
+const FAVORITES_PER_PAGE = 8
+
 document.addEventListener('DOMContentLoaded', () => {
   const paginationContainer = document.querySelector('#pagination')
   const locationPaginationContainer = document.querySelector('#location-pagination')
   const episodePaginationContainer = document.querySelector('#episode-pagination')
+  const favoritePaginationContainer = document.querySelector('#favorite-pagination')
   const charactersContainer = document.querySelector('.characters')
   const episodesContainer = document.querySelector('.episodes')
+  const favoritesContainer = document.querySelector('.favorites')
   const randomButton = document.querySelector('#random-character-button')
   const nameInput = document.querySelector('#character-search-name')
   const speciesSelect = document.querySelector('#character-search-species')
@@ -49,9 +57,33 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
   charactersContainer.addEventListener('click', function (e) {
-    if (e.target.classList.contains('favorite_button')) return
+    if (e.target.classList.contains('favorite_button')) {
+      const characterId = Number(e.target.dataset.id)
+      const isFav = toggleFavorite(characterId)
+      e.target.textContent = isFav ? '❤️ Quitar favorito' : '🤍 Agregar favorito'
+      return
+    }
     const card = e.target.closest('.character')
     if (card) openCharacterDetail(card.dataset.id)
+  })
+
+  favoritesContainer.addEventListener('click', function (e) {
+    if (e.target.classList.contains('favorite_button')) {
+      const characterId = Number(e.target.dataset.id)
+      toggleFavorite(characterId)
+      removeFavoriteFromView(characterId)
+      return
+    }
+    const card = e.target.closest('.character')
+    if (card) openCharacterDetail(card.dataset.id)
+  })
+
+  favoritePaginationContainer.addEventListener('click', function (e) {
+    e.preventDefault()
+    if (e.target.classList.contains('pagination_button')) {
+      const page = Number(e.target.getAttribute('href'))
+      renderFavoritesPage(page)
+    }
   })
 
   searchButton.addEventListener('click', () => {
@@ -78,6 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (view === 'episodes' && !document.querySelector('.episodes').innerHTML) {
         getEpisodesByPage()
+      }
+      if (view === 'favorites') {
+        loadFavorites(1)
       }
     })
   })
@@ -196,8 +231,37 @@ async function openCharacterDetail (id) {
 async function openEpisodeDetail (id) {
   const apiUrl = `https://rickandmortyapi.com/api/episode/${id}`
   const episode = await fetchData(apiUrl)
-  if (!episode) return
+  if (!episode) { return }
 
   const characters = await fetchMultiple(episode.characters)
   renderEpisodeModal(episode, characters)
+}
+
+async function loadFavorites (page = 1) {
+  favoritesData = await getFavoriteCharacters()
+  renderFavoritesPage(page)
+}
+
+function renderFavoritesPage (page = 1) {
+  currentFavoritesPage = page
+  const totalPages = Math.max(1, Math.ceil(favoritesData.length / FAVORITES_PER_PAGE))
+  const start = (page - 1) * FAVORITES_PER_PAGE
+  const pageItems = favoritesData.slice(start, start + FAVORITES_PER_PAGE)
+
+  renderFavorites(pageItems)
+
+  const favoritePaginationContainer = document.querySelector('#favorite-pagination')
+
+  favoritePaginationContainer.innerHTML = ''
+
+  if (favoritesData.length > FAVORITES_PER_PAGE) {
+    renderPagination(totalPages, page, 'favorite-pagination')
+  }
+}
+
+function removeFavoriteFromView (characterId) {
+  favoritesData = favoritesData.filter(character => character.id !== characterId)
+  const totalPages = Math.max(1, Math.ceil(favoritesData.length / FAVORITES_PER_PAGE))
+  if (currentFavoritesPage > totalPages) currentFavoritesPage = totalPages
+  renderFavoritesPage(currentFavoritesPage)
 }

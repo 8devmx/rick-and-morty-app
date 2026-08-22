@@ -146,6 +146,24 @@ nav ul a {
   padding: 20px 10px;
 }
 
+.favorites {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+}
+
+.favorite_button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: crimson;
+  color: #fff;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
 footer {
   margin: auto;
   text-align: center;
@@ -154,7 +172,8 @@ footer {
 
 #pagination,
 #location-pagination,
-#episode-pagination {
+#episode-pagination,
+#favorite-pagination {
   display: flex;
   justify-content: center;
   gap: 10px;
@@ -164,7 +183,8 @@ footer {
 
 #pagination a,
 #location-pagination a,
-#episode-pagination a {
+#episode-pagination a,
+#favorite-pagination a {
   display: block;
   background: #f5f5f5;
   color: #000;
@@ -176,7 +196,8 @@ footer {
 
 #pagination a:hover,
 #location-pagination a:hover,
-#episode-pagination a:hover {
+#episode-pagination a:hover,
+#favorite-pagination a:hover {
   background: crimson;
   color: #fff;
 }
@@ -190,7 +211,8 @@ footer {
 
 #pagination a.active,
 #location-pagination a.active,
-#episode-pagination a.active {
+#episode-pagination a.active,
+#favorite-pagination a.active {
   background: #535353;
   color: #fff;
 }
@@ -382,7 +404,8 @@ footer {
   }
 
   .characters,
-  .locations {
+  .locations,
+  .favorites {
     grid-template-columns: repeat(2, 1fr);
   }
 
