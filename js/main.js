@@ -117,17 +117,19 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   })
 
-  randomButton.addEventListener('click', async function () {
-    randomButton.disabled = true
+  if (randomButton) {
+    randomButton.addEventListener('click', async function () {
+      randomButton.disabled = true
 
-    const randomId = Math.floor(Math.random() * totalCharacters) + 1
-    const apiUrl = `https://rickandmortyapi.com/api/character/${randomId}`
+      const randomId = Math.floor(Math.random() * totalCharacters) + 1
+      const apiUrl = `https://rickandmortyapi.com/api/character/${randomId}`
 
-    const character = await fetchData(apiUrl)
-    renderRandomCharacter(character)
+      const character = await fetchData(apiUrl)
+      renderRandomCharacter(character)
 
-    randomButton.disabled = false
-  })
+      randomButton.disabled = false
+    })
+  }
 })
 
 function showView (view) {
