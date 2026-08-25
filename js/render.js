@@ -9,7 +9,7 @@ function characterCardTemplate (character) {
         <img src="${character.image}" alt="">
       </div>
       <div class="character_info">
-        <h2>${character.name}</h2>
+        <h2 class="character_name">${character.name}</h2>
         <p>Status: ${character.status}</p>
         <p>Species: ${character.species}</p>
         <p>Gender: ${character.gender}</p>
@@ -103,7 +103,7 @@ export function renderRandomCharacter (character) {
     <div class="character">
       <img src="${character.image}" alt="${character.name}">
       <div class="character_info">
-        <h2>${character.name}</h2>
+        <h2 class="character_name">${character.name}</h2>
         <p>Status: ${character.status}</p>
         <p>Species: ${character.species}</p>
         <p>Location: ${character.location.name}</p>
@@ -121,7 +121,7 @@ export function renderCharacterModal (character, episodes) {
 
   const html = `
     <img src="${character.image}" alt="${character.name}">
-    <h2>${character.name}</h2>
+    <h2 class="character_name">${character.name}</h2>
     <p>Status: ${character.status}</p>
     <p>Species: ${character.species}</p>
     <p>Gender: ${character.gender}</p>
