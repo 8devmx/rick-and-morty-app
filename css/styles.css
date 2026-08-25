@@ -131,10 +131,11 @@ nav ul a {
   border-radius: 10px;
   text-align: center;
   transition: all 0.5s ease;
+  overflow: hidden;
 }
 
 .character:hover {
-  transform: scale(1.1);
+  transform: scale(1.04);
 }
 
 .character img {
@@ -144,6 +145,15 @@ nav ul a {
 
 .character_info {
   padding: 20px 10px;
+}
+
+.character_name {
+  display: -webkit-box;
+  min-height: 2.4em;
+  margin-bottom: 10px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .favorites {
@@ -331,8 +341,8 @@ footer {
   object-fit: cover;
 }
 
-#detail-modal-content h2 {
-  margin-bottom: 10px;
+#detail-modal-content .character_name {
+  min-height: 2.4em;
 }
 
 #detail-modal-content p {
