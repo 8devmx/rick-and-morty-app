@@ -48,23 +48,61 @@ export function renderNoCharacters () {
   document.querySelector('#pagination').innerHTML = ''
 }
 
+function statusColor (status) {
+  if (status === 'Alive') return '#4caf50'
+  if (status === 'Dead') return '#f44336'
+  return '#9e9e9e'
+}
+
+function buildResidentsHtml (location) {
+  const rd = location._residentsData
+  if (!rd || rd.characters.length === 0) return ''
+  let html = '<div class="location_residents">'
+  rd.characters.forEach(character => {
+    html += `
+      <div class="location_resident">
+        <img src="${character.image}" alt="${character.name}">
+        <div class="location_resident_info">
+          <p class="location_resident_name">${character.name}</p>
+          <p class="location_resident_species">${character.species}</p>
+          <span class="location_resident_status" style="background:${statusColor(character.status)}">${character.status}</span>
+        </div>
+      </div>
+    `
+  })
+  html += '</div>'
+  return html
+}
+
 export function renderAllLocations (response, currentPage) {
   const { results, info } = response
+  const withResidents = results.filter(l => l.residents.length > 0)
   let html = ''
-  results.forEach(location => {
+  withResidents.forEach(location => {
+    const residentsHtml = location._residentsData ? buildResidentsHtml(location) : ''
     html += `
-      <div class="location">
+      <div class="location" data-location-id="${location.id}">
         <div class="location_info">
           <h2>${location.name}</h2>
           <p>Type: ${location.type}</p>
           <p>Dimension: ${location.dimension}</p>
           <p>Residents: ${location.residents.length}</p>
         </div>
+        ${residentsHtml}
       </div>
     `
   })
   document.querySelector('.locations').innerHTML = html
   renderPagination(info.pages, currentPage, 'location-pagination', 'locations_cache')
+}
+
+export function renderLocationResidents (location) {
+  const card = document.querySelector(`.location[data-location-id="${location.id}"]`)
+  if (!card) return
+  const existing = card.querySelector('.location_residents')
+  if (existing) existing.remove()
+  const html = buildResidentsHtml(location)
+  if (html) card.insertAdjacentHTML('beforeend', html)
 }
 
 export function renderAllEpisodes (response, currentPage) {
