@@ -23,7 +23,7 @@ function characterCardTemplate (character) {
         </button>
       </div>
     </div>
-  `
+  ` 
 }
 
 export default function renderAllCharacters (response, currentPage, cacheKey = 'characters_cache') {

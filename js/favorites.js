@@ -3,7 +3,7 @@ import { getJsonItem, setJsonItem } from './storage.js'
 
 export function getFavoritesIDs () {
   return getJsonItem('favorites', [])
-}
+} 
 
 export function saveFavorites (favorites) {
   setJsonItem('favorites', favorites)
