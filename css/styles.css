@@ -253,30 +253,41 @@ footer {
 }
 
 .locations {
-  padding: 20px 20px 20px;
+  padding: 30px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 15px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }
 
 .location {
   background: #f5f5f5;
   border-radius: 10px;
-  text-align: center;
-  padding: 20px;
+  text-align: left;
+  padding: 28px;
   transition: all 0.5s ease;
 }
 
 .location:hover {
-  transform: scale(1.05);
+  transform: scale(1.03);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .location h2 {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  font-size: 1.3rem;
+  color: #111;
+  border-bottom: 2px solid crimson;
+  padding-bottom: 10px;
 }
 
 .location p {
-  margin-bottom: 5px;
+  margin-bottom: 6px;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.location_info {
+  margin-bottom: 4px;
 }
 
 .modal {
@@ -393,6 +404,68 @@ footer {
   cursor: pointer;
 }
 
+.location_residents {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+  padding: 14px;
+
+  background: #e8e8e8;
+  border-radius: 12px;
+  border-top: 1px solid #ddd;
+  position: relative;
+}
+
+.location_resident {
+  text-align: center;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.location_resident:hover {
+  transform: scale(1.05);
+}
+
+.location_resident img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.location_resident_info {
+  padding: 8px 6px 10px;
+}
+
+.location_resident_name {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #111;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 2px;
+}
+
+.location_resident_species {
+  font-size: 0.6rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.location_resident_status {
+  display: inline-block;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 @media (max-width: 768px) {
   header {
     flex-direction: column;
@@ -414,9 +487,12 @@ footer {
   }
 
   .characters,
-  .locations,
   .favorites {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .locations {
+    grid-template-columns: 1fr;
   }
 
   .episodes {
@@ -441,10 +517,6 @@ footer {
     max-width: 92vw;
   }
 }
-/* ==============================
-   DISEÑO DEL BOTÓN DE FAVORITOS
-   Issue #27
-   ============================== */
 
 .favorite_button {
     width: 100%;
