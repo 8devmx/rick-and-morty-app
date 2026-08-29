@@ -9,7 +9,7 @@ function characterCardTemplate (character) {
         <img src="${character.image}" alt="">
       </div>
       <div class="character_info">
-        <h2>${character.name}</h2>
+        <h2 class="character_name">${character.name}</h2>
         <p>Status: ${character.status}</p>
         <p>Species: ${character.species}</p>
         <p>Gender: ${character.gender}</p>
@@ -18,13 +18,14 @@ function characterCardTemplate (character) {
           class="favorite_button"
           data-id="${character.id}">
           ${isFavorite(character.id)
-      ? '❤️ Quitar favorito'
-      : '🤍 Agregar favorito'}
+      ? '❤️ Quit favorite'
+      : '🤍 Add favorite'}
         </button>
       </div>
     </div>
   `
 }
+
 
 export default function renderAllCharacters (response, currentPage, cacheKey = 'characters_cache') {
   const { results, info } = response
@@ -48,23 +49,62 @@ export function renderNoCharacters () {
   document.querySelector('#pagination').innerHTML = ''
 }
 
+function statusColor (status) {
+  if (status === 'Alive') return '#4caf50'
+  if (status === 'Dead') return '#f44336'
+  return '#9e9e9e'
+}
+
+function buildResidentsHtml (location) {
+  const rd = location._residentsData
+  if (!rd || rd.characters.length === 0) return ''
+  let html = '<div class="location_residents">'
+  rd.characters.forEach(character => {
+    html += `
+      <div class="location_resident">
+        <img src="${character.image}" alt="${character.name}">
+        <div class="location_resident_info">
+          <p class="location_resident_name">${character.name}</p>
+          <p class="location_resident_species">${character.species}</p>
+          <span class="location_resident_status" style="background:${statusColor(character.status)}">${character.status}</span>
+        </div>
+      </div>
+    `
+  })
+  html += '</div>'
+  return html
+}
+
 export function renderAllLocations (response, currentPage) {
   const { results, info } = response
+  const withResidents = results.filter(l => l.residents.length > 0)
   let html = ''
-  results.forEach(location => {
+  withResidents.forEach(location => {
+    const footer = location.residents.length > 0
+      ? `<button class="load_residents_btn" type="button">Ver ${location.residents.length} residentes</button>`
+      : '<p class="location_no_residents">Sin residentes</p>'
     html += `
-      <div class="location">
+      <div class="location" data-location-id="${location.id}" data-residents="${location.residents.join(',')}">
         <div class="location_info">
           <h2>${location.name}</h2>
           <p>Type: ${location.type}</p>
           <p>Dimension: ${location.dimension}</p>
-          <p>Residents: ${location.residents.length}</p>
         </div>
+        ${footer}
       </div>
     `
   })
   document.querySelector('.locations').innerHTML = html
   renderPagination(info.pages, currentPage, 'location-pagination', 'locations_cache')
+}
+
+export function renderLocationResidents (location) {
+  const card = document.querySelector(`.location[data-location-id="${location.id}"]`)
+  if (!card) return
+  const existing = card.querySelector('.location_residents')
+  if (existing) existing.remove()
+  const html = buildResidentsHtml(location)
+  if (html) card.insertAdjacentHTML('beforeend', html)
 }
 
 export function renderAllEpisodes (response, currentPage) {
@@ -103,7 +143,7 @@ export function renderRandomCharacter (character) {
     <div class="character">
       <img src="${character.image}" alt="${character.name}">
       <div class="character_info">
-        <h2>${character.name}</h2>
+        <h2 class="character_name">${character.name}</h2>
         <p>Status: ${character.status}</p>
         <p>Species: ${character.species}</p>
         <p>Location: ${character.location.name}</p>
@@ -116,12 +156,12 @@ export function renderRandomCharacter (character) {
 
 export function renderCharacterModal (character, episodes) {
   const episodesHtml = episodes
-    .map(episode => `<span class="episode_chip">${episode.episode}</span>`)
+    .map(episode => `<span class="episode_chip" data-episode-id="${episode.id}" title="Ver episodio">${episode.episode}</span>`)
     .join('')
 
   const html = `
     <img src="${character.image}" alt="${character.name}">
-    <h2>${character.name}</h2>
+    <h2 class="character_name">${character.name}</h2>
     <p>Status: ${character.status}</p>
     <p>Species: ${character.species}</p>
     <p>Gender: ${character.gender}</p>

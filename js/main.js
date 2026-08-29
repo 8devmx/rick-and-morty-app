@@ -1,12 +1,14 @@
 import fetchData, { fetchMultiple } from './api.js'
-import renderAllCharacters, { renderAllLocations, renderAllEpisodes, renderRandomCharacter, renderCharacterModal, renderEpisodeModal, renderNoCharacters, renderFavorites, renderPagination } from './render.js'
+import renderAllCharacters, { renderAllLocations, renderAllEpisodes, renderRandomCharacter, renderCharacterModal, renderEpisodeModal, renderNoCharacters, renderFavorites, renderPagination, renderLocationResidents } from './render.js'
 import { getJsonItem, setJsonItem } from './storage.js'
 import { getFavoriteCharacters } from './helpers.js'
 import { toggleFavorite } from './favorites.js'
+import { onEpisodeChipClick } from './modal.js'
 
 let totalCharacters = 0
 let navLinks
 const characterFilters = { name: '', status: '', species: '', gender: '' }
+
 
 let favoritesData = []
 let currentFavoritesPage = 1
@@ -18,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const episodePaginationContainer = document.querySelector('#episode-pagination')
   const favoritePaginationContainer = document.querySelector('#favorite-pagination')
   const charactersContainer = document.querySelector('.characters')
+  const locationsContainer = document.querySelector('.locations')
   const episodesContainer = document.querySelector('.episodes')
   const favoritesContainer = document.querySelector('.favorites')
   const randomButton = document.querySelector('#random-character-button')
@@ -48,6 +51,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 
+  locationsContainer.addEventListener('click', function (e) {
+    const card = e.target.closest('.location')
+    if (!card || card.dataset.loaded === 'true') return
+    const residentUrls = (card.dataset.residents || '').split(',').filter(Boolean)
+    if (!residentUrls.length) return
+    loadLocationResidents(card.dataset.locationId, residentUrls)
+  })
+
   episodePaginationContainer.addEventListener('click', function (e) {
     e.preventDefault()
     if (e.target.classList.contains('pagination_button')) {
@@ -72,10 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const characterId = Number(e.target.dataset.id)
       toggleFavorite(characterId)
       removeFavoriteFromView(characterId)
-      return
     }
-    const card = e.target.closest('.character')
-    if (card) openCharacterDetail(card.dataset.id)
   })
 
   favoritePaginationContainer.addEventListener('click', function (e) {
@@ -92,11 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
     characterFilters.status = statusSelect.value
     characterFilters.gender = genderSelect.value
     getCharacterByPage(1)
-  })
-
-  episodesContainer.addEventListener('click', function (e) {
-    const card = e.target.closest('.episode')
-    if (card) openEpisodeDetail(card.dataset.id)
   })
 
   navLinks.forEach(link => {
@@ -117,17 +120,18 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   })
 
-  randomButton.addEventListener('click', async function () {
-    randomButton.disabled = true
+  if (randomButton) {
+    randomButton.addEventListener('click', async function () {
+      randomButton.disabled = true
+      const randomId = Math.floor(Math.random() * totalCharacters) + 1
+      const apiUrl = `https://rickandmortyapi.com/api/character/${randomId}`
+      const character = await fetchData(apiUrl)
+      renderRandomCharacter(character)
+      randomButton.disabled = false
+    })
+  }
 
-    const randomId = Math.floor(Math.random() * totalCharacters) + 1
-    const apiUrl = `https://rickandmortyapi.com/api/character/${randomId}`
-
-    const character = await fetchData(apiUrl)
-    renderRandomCharacter(character)
-
-    randomButton.disabled = false
-  })
+  onEpisodeChipClick(openEpisodeDetail)
 })
 
 function showView (view) {
@@ -167,7 +171,6 @@ function buildCharacterUrl (page) {
 
 async function getCharacterByPage (page = 1) {
   const filtered = hasActiveCharacterFilters()
-
   if (!filtered) {
     const cached = getCachedPage('characters', page)
     if (cached) {
@@ -176,14 +179,12 @@ async function getCharacterByPage (page = 1) {
       return
     }
   }
-
   const apiUrl = buildCharacterUrl(page)
   const response = await fetchData(apiUrl)
   if (!response) {
     if (filtered) renderNoCharacters()
     return
   }
-
   if (!filtered) {
     totalCharacters = response.info.count
     cachePage('characters', page, response)
@@ -191,27 +192,82 @@ async function getCharacterByPage (page = 1) {
   renderAllCharacters(response, page, filtered ? null : 'characters_cache')
 }
 
-async function getLocationByPage (page = 1) {
-  const cached = getCachedPage('locations', page)
-  if (cached) {
-    renderAllLocations(cached, page)
-    return
-  }
+const sleep = ms => new Promise(r => setTimeout(r, ms))
 
+async function safeFetch (url) {
+  try {
+    const res = await fetch(url)
+    if (!res.ok) return null
+    return await res.json()
+  } catch { return null }
+}
+
+async function fetchCharactersByIds (ids) {
+  if (!ids.length) return []
+  const data = await safeFetch(`https://rickandmortyapi.com/api/character/${ids.join(',')}`)
+  if (!data) return []
+  return Array.isArray(data) ? data : [data]
+}
+
+async function fetchCharactersSafe (urls) {
+  const ids = urls.map(u => u.split('/').pop()).filter(Boolean)
+  if (!ids.length) return []
+  const results = []
+  for (let i = 0; i < ids.length; i += 20) {
+    const chunk = ids.slice(i, i + 20)
+    const batch = await fetchCharactersByIds(chunk)
+    if (batch.length > 0) {
+      results.push(...batch)
+    } else {
+      for (const id of chunk) {
+        const ch = await safeFetch(`https://rickandmortyapi.com/api/character/${id}`)
+        if (ch) results.push(ch)
+      }
+    }
+    if (i + 20 < ids.length) await sleep(300)
+  }
+  return results
+}
+
+async function getLocationByPage (page = '1') {
+  page = String(page)
   const apiUrl = `https://rickandmortyapi.com/api/location?page=${page}`
   const response = await fetchData(apiUrl)
   if (!response) return
-  cachePage('locations', page, response)
-  renderAllLocations(response, page)
+  const withResidents = response.results.filter(l => l.residents.length > 0)
+  // Solo se renderizan las locaciones; los residents se cargan únicamente
+  // cuando el usuario hace clic en una locación (evita bloquear la API).
+  renderAllLocations({ ...response, results: withResidents }, page)
 }
 
-async function getEpisodesByPage (page = 1) {
-  const cached = getCachedPage('episodes', page)
-  if (cached) {
-    renderAllEpisodes(cached, page)
+// Carga los residents de una locación únicamente al hacerle clic.
+async function loadLocationResidents (locationId, residentUrls) {
+  const card = document.querySelector(`.location[data-location-id="${locationId}"]`)
+  if (!card || card.dataset.loaded === 'true') return
+  card.dataset.loaded = 'true'
+
+  const requestBtn = card.querySelector('.load_residents_btn')
+  if (requestBtn) {
+    requestBtn.disabled = true
+    requestBtn.textContent = 'Cargando...'
+  }
+
+  const chars = await fetchCharactersSafe(residentUrls)
+  if (!chars.length) {
+    // Si falló, permitir reintentarlo
+    card.dataset.loaded = 'false'
+    if (requestBtn) {
+      requestBtn.disabled = false
+      requestBtn.textContent = 'Reintentar'
+    }
     return
   }
 
+  renderLocationResidents({ id: locationId, _residentsData: { characters: chars } })
+  if (requestBtn) requestBtn.remove()
+}
+
+async function getEpisodesByPage (page = 1) {
   const apiUrl = `https://rickandmortyapi.com/api/episode?page=${page}`
   const response = await fetchData(apiUrl)
   if (!response) return
@@ -223,7 +279,6 @@ async function openCharacterDetail (id) {
   const apiUrl = `https://rickandmortyapi.com/api/character/${id}`
   const character = await fetchData(apiUrl)
   if (!character) return
-
   const episodes = await fetchMultiple(character.episode)
   renderCharacterModal(character, episodes)
 }
@@ -231,8 +286,7 @@ async function openCharacterDetail (id) {
 async function openEpisodeDetail (id) {
   const apiUrl = `https://rickandmortyapi.com/api/episode/${id}`
   const episode = await fetchData(apiUrl)
-  if (!episode) { return }
-
+  if (!episode) return
   const characters = await fetchMultiple(episode.characters)
   renderEpisodeModal(episode, characters)
 }
@@ -247,13 +301,9 @@ function renderFavoritesPage (page = 1) {
   const totalPages = Math.max(1, Math.ceil(favoritesData.length / FAVORITES_PER_PAGE))
   const start = (page - 1) * FAVORITES_PER_PAGE
   const pageItems = favoritesData.slice(start, start + FAVORITES_PER_PAGE)
-
   renderFavorites(pageItems)
-
   const favoritePaginationContainer = document.querySelector('#favorite-pagination')
-
   favoritePaginationContainer.innerHTML = ''
-
   if (favoritesData.length > FAVORITES_PER_PAGE) {
     renderPagination(totalPages, page, 'favorite-pagination')
   }
