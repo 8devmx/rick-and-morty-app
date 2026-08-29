@@ -9,7 +9,7 @@ let navLinks
 const characterFilters = { name: '', status: '', species: '', gender: '' }
 
 let favoritesData = []
-let currentFavoritesPage = 1
+let  currentFavoritesPage = 1
 const FAVORITES_PER_PAGE = 8
 
 document.addEventListener('DOMContentLoaded', () => {

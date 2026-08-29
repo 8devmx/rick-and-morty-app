@@ -1,7 +1,7 @@
 import { showModal } from './modal.js'
 
 export default async function fetchData (url) {
-  try {
+  try { 
     const response = await fetch(url)
 
     if (hasError(response)) return null
