@@ -88,8 +88,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const characterId = Number(e.target.dataset.id)
       toggleFavorite(characterId)
       removeFavoriteFromView(characterId)
+          document.querySelectorAll(`.favorite_button[data-id="${characterId}"]`)
+      .forEach(btn => btn.textContent = '🤍 Agregar favorito');
+  }
     }
-  })
+  )
+  
 
   favoritePaginationContainer.addEventListener('click', function (e) {
     e.preventDefault()
@@ -318,3 +322,6 @@ function removeFavoriteFromView (characterId) {
   if (currentFavoritesPage > totalPages) currentFavoritesPage = totalPages
   renderFavoritesPage(currentFavoritesPage)
 }
+
+  document.querySelectorAll(`.favorite_button[data-id="${characterId}"]`)
+    .forEach(btn => btn.textContent = '🤍 Agregar favorito')
