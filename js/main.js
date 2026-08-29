@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.classList.contains('favorite_button')) {
       const characterId = Number(e.target.dataset.id)
       const isFav = toggleFavorite(characterId)
-      e.target.textContent = isFav ? '❤️ Quitar favorito' : '🤍 Agregar favorito'
+      e.target.textContent = isFav ? '❤️ Remove from favorites' : '🤍 Add Favorite'
       return
     }
     const card = e.target.closest('.character')
