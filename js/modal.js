@@ -16,6 +16,7 @@ const detailModal = document.querySelector('#detail-modal')
 const detailModalContent = document.querySelector('#detail-modal-content')
 const detailModalClose = document.querySelector('#detail-modal-close')
 
+
 detailModalClose.addEventListener('click', function () {
   detailModal.hidden = true
 })

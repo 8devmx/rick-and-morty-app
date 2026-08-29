@@ -21,5 +21,5 @@ export function setJsonItem(llave, valor) {
     } catch (e) {
         console.warn(`No se pudo guardar "${llave}"`, e);
         return false;
-    }
+    } 
 }

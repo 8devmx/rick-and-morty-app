@@ -23,7 +23,7 @@ function characterCardTemplate (character) {
         </button>
       </div>
     </div>
-  `
+  ` 
 }
 
 

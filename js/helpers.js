@@ -9,7 +9,7 @@ function getCachedCharactersById (ids) {
 }
 
 // Devuelve los personajes favoritos completos, tomándolos del cache de páginas
-// ya visitadas y trayendo de la API los que falten (favoritos agregados desde
+// ya  visitadas y trayendo de la API los que falten (favoritos agregados desde
 // páginas que nunca se cargaron en esta sesión).
 export async function getFavoriteCharacters () {
   const favoriteIds = getFavoritesIDs()

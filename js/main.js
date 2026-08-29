@@ -11,7 +11,7 @@ const characterFilters = { name: '', status: '', species: '', gender: '' }
 
 
 let favoritesData = []
-let currentFavoritesPage = 1
+let  currentFavoritesPage = 1
 const FAVORITES_PER_PAGE = 8
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -240,8 +240,6 @@ async function getLocationByPage (page = '1') {
   const response = await fetchData(apiUrl)
   if (!response) return
   const withResidents = response.results.filter(l => l.residents.length > 0)
-  // Solo se renderizan las locaciones; los residents se cargan únicamente
-  // cuando el usuario hace clic en una locación (evita bloquear la API).
   renderAllLocations({ ...response, results: withResidents }, page)
 }
 
