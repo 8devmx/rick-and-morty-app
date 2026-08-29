@@ -67,6 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 
+  episodesContainer.addEventListener('click', function (e) {
+    const card = e.target.closest('.episode')
+    if (card) openEpisodeDetail(card.dataset.id)
+  })
+
   charactersContainer.addEventListener('click', function (e) {
     if (e.target.classList.contains('favorite_button')) {
       const characterId = Number(e.target.dataset.id)
