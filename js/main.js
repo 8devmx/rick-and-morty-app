@@ -3,10 +3,12 @@ import renderAllCharacters, { renderAllLocations, renderAllEpisodes, renderRando
 import { getJsonItem, setJsonItem } from './storage.js'
 import { getFavoriteCharacters } from './helpers.js'
 import { toggleFavorite } from './favorites.js'
+import { onEpisodeChipClick } from './modal.js'
 
 let totalCharacters = 0
 let navLinks
 const characterFilters = { name: '', status: '', species: '', gender: '' }
+
 
 let favoritesData = []
 let  currentFavoritesPage = 1
@@ -18,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const episodePaginationContainer = document.querySelector('#episode-pagination')
   const favoritePaginationContainer = document.querySelector('#favorite-pagination')
   const charactersContainer = document.querySelector('.characters')
+  const locationsContainer = document.querySelector('.locations')
   const episodesContainer = document.querySelector('.episodes')
   const favoritesContainer = document.querySelector('.favorites')
   const randomButton = document.querySelector('#random-character-button')
@@ -48,12 +51,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 
+  locationsContainer.addEventListener('click', function (e) {
+    const card = e.target.closest('.location')
+    if (!card || card.dataset.loaded === 'true') return
+    const residentUrls = (card.dataset.residents || '').split(',').filter(Boolean)
+    if (!residentUrls.length) return
+    loadLocationResidents(card.dataset.locationId, residentUrls)
+  })
+
   episodePaginationContainer.addEventListener('click', function (e) {
     e.preventDefault()
     if (e.target.classList.contains('pagination_button')) {
       const page = e.target.getAttribute('href')
       getEpisodesByPage(page)
     }
+  })
+
+  episodesContainer.addEventListener('click', function (e) {
+    const card = e.target.closest('.episode')
+    if (card) openEpisodeDetail(card.dataset.id)
   })
 
   charactersContainer.addEventListener('click', function (e) {
@@ -72,10 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const characterId = Number(e.target.dataset.id)
       toggleFavorite(characterId)
       removeFavoriteFromView(characterId)
-      return
     }
-    const card = e.target.closest('.character')
-    if (card) openCharacterDetail(card.dataset.id)
   })
 
   favoritePaginationContainer.addEventListener('click', function (e) {
@@ -92,11 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
     characterFilters.status = statusSelect.value
     characterFilters.gender = genderSelect.value
     getCharacterByPage(1)
-  })
-
-  episodesContainer.addEventListener('click', function (e) {
-    const card = e.target.closest('.episode')
-    if (card) openEpisodeDetail(card.dataset.id)
   })
 
   navLinks.forEach(link => {
@@ -127,6 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
       randomButton.disabled = false
     })
   }
+
+  onEpisodeChipClick(openEpisodeDetail)
 })
 
 function showView (view) {
@@ -231,12 +241,33 @@ async function getLocationByPage (page = '1') {
   if (!response) return
   const withResidents = response.results.filter(l => l.residents.length > 0)
   renderAllLocations({ ...response, results: withResidents }, page)
-  for (const location of withResidents) {
-    const characters = await fetchCharactersSafe(location.residents)
-    location._residentsData = { characters }
-    renderLocationResidents(location)
-    await sleep(400)
+}
+
+// Carga los residents de una locación únicamente al hacerle clic.
+async function loadLocationResidents (locationId, residentUrls) {
+  const card = document.querySelector(`.location[data-location-id="${locationId}"]`)
+  if (!card || card.dataset.loaded === 'true') return
+  card.dataset.loaded = 'true'
+
+  const requestBtn = card.querySelector('.load_residents_btn')
+  if (requestBtn) {
+    requestBtn.disabled = true
+    requestBtn.textContent = 'Cargando...'
   }
+
+  const chars = await fetchCharactersSafe(residentUrls)
+  if (!chars.length) {
+    // Si falló, permitir reintentarlo
+    card.dataset.loaded = 'false'
+    if (requestBtn) {
+      requestBtn.disabled = false
+      requestBtn.textContent = 'Reintentar'
+    }
+    return
+  }
+
+  renderLocationResidents({ id: locationId, _residentsData: { characters: chars } })
+  if (requestBtn) requestBtn.remove()
 }
 
 async function getEpisodesByPage (page = 1) {

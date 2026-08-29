@@ -11,6 +11,7 @@ export function showModal (message) {
   modal.hidden = false
 }
 
+
 const detailModal = document.querySelector('#detail-modal')
 const detailModalContent = document.querySelector('#detail-modal-content')
 const detailModalClose = document.querySelector('#detail-modal-close')
@@ -29,4 +30,15 @@ detailModal.addEventListener('click', function (e) {
 export function showDetailModal (html) {
   detailModalContent.innerHTML = html
   detailModal.hidden = false
+}
+
+export function hideDetailModal () {
+  detailModal.hidden = true
+}
+
+export function onEpisodeChipClick (handler) {
+  detailModal.addEventListener('click', function (e) {
+    const chip = e.target.closest('.episode_chip')
+    if (chip) handler(Number(chip.dataset.episodeId))
+  })
 }

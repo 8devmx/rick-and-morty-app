@@ -18,13 +18,14 @@ function characterCardTemplate (character) {
           class="favorite_button"
           data-id="${character.id}">
           ${isFavorite(character.id)
-      ? '❤️ Quitar favorito'
-      : '🤍 Agregar favorito'}
+      ? '❤️ Quit favorite'
+      : '🤍 Add favorite'}
         </button>
       </div>
     </div>
   ` 
 }
+
 
 export default function renderAllCharacters (response, currentPage, cacheKey = 'characters_cache') {
   const { results, info } = response
@@ -79,16 +80,17 @@ export function renderAllLocations (response, currentPage) {
   const withResidents = results.filter(l => l.residents.length > 0)
   let html = ''
   withResidents.forEach(location => {
-    const residentsHtml = location._residentsData ? buildResidentsHtml(location) : ''
+    const footer = location.residents.length > 0
+      ? `<button class="load_residents_btn" type="button">Ver ${location.residents.length} residentes</button>`
+      : '<p class="location_no_residents">Sin residentes</p>'
     html += `
-      <div class="location" data-location-id="${location.id}">
+      <div class="location" data-location-id="${location.id}" data-residents="${location.residents.join(',')}">
         <div class="location_info">
           <h2>${location.name}</h2>
           <p>Type: ${location.type}</p>
           <p>Dimension: ${location.dimension}</p>
-          <p>Residents: ${location.residents.length}</p>
         </div>
-        ${residentsHtml}
+        ${footer}
       </div>
     `
   })
@@ -154,7 +156,7 @@ export function renderRandomCharacter (character) {
 
 export function renderCharacterModal (character, episodes) {
   const episodesHtml = episodes
-    .map(episode => `<span class="episode_chip">${episode.episode}</span>`)
+    .map(episode => `<span class="episode_chip" data-episode-id="${episode.id}" title="Ver episodio">${episode.episode}</span>`)
     .join('')
 
   const html = `
